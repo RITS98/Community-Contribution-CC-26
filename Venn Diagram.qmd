@@ -1,0 +1,106 @@
+---
+title: "Venn Diagrams"
+author: Ritayan Patra (rp3247) Devdatt Golwala (drg2172)
+format:
+  html:
+    fig-width: 8
+    fig-height: 10
+    embed-resources: true
+    df-print: paged
+execute: 
+  echo: true
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+#install.packages('ggVennDiagram')
+```
+
+```{r}
+library(ggplot2)
+library(ggVennDiagram)
+```
+
+```{r}
+data <- data.frame(
+  Person = c("Alice", "Bob", "Charlie", "David", 
+             "Eve", "Frank", "Grace", "Hannah", "Isaac", "Jack"),
+  Toys = I(list(
+    c("car", "doll", "ball"),                       # Toys Alice has (3 toys)
+    c("doll", "puzzle"),                            # Toys Bob has (2 toys)
+    c("car", "puzzle", "kite", "bike"),             # Toys Charlie has (4 toys)
+    c("robot", "kite", "ball"),                     # Toys David has (3 toys)
+    c("doll", "kite", "blocks", "robot"),           # Toys Eve has (4 toys)
+    c("train", "car", "kite"),                      # Toys Frank has (3 toys)
+    c("doll", "train", "ball", "robot", "kite"),    # Toys Grace has (5 toys)
+    c("car", "bike", "train"),                      # Toys Hannah has (3 toys)
+    c("robot", "doll", "colors"),                   # Toys Isaac has (3 toys)
+    c("blocks", "doll", "puzzle", "bike",           # Toys Jack has (5 toys)
+      "dinosaur")     
+  ))
+)
+
+# Convert the data into a list of sets for Venn Diagram input
+toy_sets <- setNames(data$Toys, data$Person)
+toy_sets
+```
+
+### Create a Venn Diagram
+
+```{r}
+ggVennDiagram(toy_sets[1:3])
+```
+
+### Choose a different name for each Venn plot
+
+```{r}
+ggVennDiagram(toy_sets[1:3],
+              category.names = c("ALICE","BOB","CHARLIE"))
+```
+
+### Setting the color for labels for each Venn plots
+
+```{r}
+ggVennDiagram(toy_sets[1:3],
+              set_color=c('blue','red','black'),
+              category.names = c("ALICE","BOB","CHARLIE"))
+```
+
+### Different Venn Plots of Various Sizes
+
+```{r}
+ggVennDiagram(toy_sets[1:2], label='count', label_color = "firebrick")
+ggVennDiagram(toy_sets[1:3], label='percent', label_color = "firebrick")
+ggVennDiagram(toy_sets[1:4], label='both', label_color = "firebrick")
+ggVennDiagram(toy_sets[1:5], label='none')
+ggVennDiagram(toy_sets[1:6], label='count')
+ggVennDiagram(toy_sets[1:7], label='none')
+
+```
+
+### Setting Edges and color palette and adding note
+
+```{r}
+ggVennDiagram(toy_sets[1:4], edge_lty = "dashed", edge_size = 1) +
+  scale_fill_distiller(palette = 'Reds') +
+  labs(
+    title='How many toys each Person has ?',
+    subtitle = 'Plot: Venn Diagram',
+    caption = Sys.Date()
+  )
+```
+
+Venn Diagram doesn't support more than 7 Venn plots. We need to use
+Upset charts to visualize more than 7 data points.
+
+```{r}
+ggVennDiagram(toy_sets[1:2], force_upset = TRUE,
+              nintersects = 10, relative_height = 1, relative_width = 0.3)
+```
+
+```{r}
+ggVennDiagram(toy_sets, force_upset = TRUE,
+              nintersects = 15, relative_height = 1, relative_width = 0.3)
+```
